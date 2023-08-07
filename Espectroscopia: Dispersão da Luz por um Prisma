@@ -1,0 +1,140 @@
+import math
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+# Dados fornecidos
+
+#Dados do zinco
+n_zn = [1.512725581, 1.517641776, 1.518387495, 1.522153556, 1.521770775, 1.520463809]
+l_zn = [0.000002470389658, 0.000003546269203,
+0.000003723990248, 0.000004393736062,
+0.000004484553134, 0.000004393736062]
+lambda_normal_zn = [636.23458,531.024,518.198,481.05321,
+472.21569,477.071]
+desvio_min_zn = [0.6710790974,0.6786538263,0.6798057437,0.6856351434,
+0.6850417314,0.6830171495]
+
+#Dados de mercúrio
+n_hg = [1.52895355000390,1.52850602149062,1.52289621841584,
+1.52045253537462,1.51669195138211,1.51499380864210, 1.51329307]
+l_hg = [0.000006125464420,0.000006106986476,0.000004604551637,
+0.000004241476417,0.000003397504248,0.000002883539391, 0.000002351577766]
+lambda_normal_hg = [404.66,407.78,435.83,491.6,
+508.58,578.01,588.89]
+desvio_min_hg = [0.6962118386,0.6955137069,0.6867870607,0.6829999662,
+0.6771877498,0.6745697559,0.671951762]
+
+#Dados de cádmio
+l_cd = [0.000005446061442,0.00000512867069,0.000004569322845,
+0.000003866141902, 0.000002412296018]
+n_cd = [1.526041287,1.523458505,1.522513698,1.520418714,
+1.514234466]
+lambda_normal_cd = [441.568,467.81,479.99,508.58,643.85]
+desvio_min_cd = [0.6916739826,0.6876597253,0.6861936487,
+0.6829473363,0.6734003853]
+
+#dados totais
+n_total = n_zn + n_hg + n_cd
+lambda_normal_total = lambda_normal_zn + lambda_normal_hg + lambda_normal_cd
+
+#Grupo II
+n_grupoii = [1.616957478, 1.620346349, 1.623415481,
+1.631343098, 1.642294741, 1.644885147, 1.650435705,
+1.616339879, 1.629317567, 1.63336366, 1.635580531,
+1.641396092, 1.617574635, 1.628810408, 1.629824415,
+1.633868023, 1.635580531, 1.638092385]
+lambda_normal_grupoii = [690.746,578.01,546.07,496,435.03,407.78,404.66,
+643.85,508.58,467.81,479.99,430.66,636.235,531.024,
+518.198,481.053,472.216,468.01]
+
+
+#Função para retornar o delta N
+def delta_n(n):
+   return (3 * 10 ** (-4)) * math.sqrt(2 + ((n ** 2) / 4) - n * math.sqrt(3 * (1 -((n ** 2) / 4))))
+
+#Função para checar se nosso comprimento de onda está bem associado com o índice de refração
+def checa_coerencia(n):
+  return ((4178.27)/(n-1.50296))**(1/2)
+
+
+  #Obter o Delta N do zinco para preencher a tabela de dados
+
+for index in n_zn:
+    print(delta_n(index))
+
+#Checar a coerência dos dados
+for index in n_zn:
+  print(checa_coerencia(index))
+
+#Obter o Delta N do mercúrio para preencher a tabela de dados
+
+for index in n_hg:
+  print(delta_n(index))
+
+#Checar a coerência dos dados
+
+for index in n_hg:
+  print(checa_coerencia(index))
+
+#Obter o Delta N do cádmio para preencher a tabela de dados
+
+for index in n_cd:
+  print(delta_n(index))
+
+#Checar a coerência dos dados
+
+for index in n_cd:
+  print(checa_coerencia(index))
+
+#Gráfico do índice de refração por lambda^2
+
+plt.rcParams['figure.dpi']=150
+plt.plot(l_zn, n_zn, linestyle='', marker='o',color='#00ff00', label='zinco')
+plt.plot(l_hg, n_hg, linestyle='', marker='o',color='#b58900', label='mercúrio')
+plt.plot(l_cd,n_cd, linestyle='', marker='o',color='#dc322f', label='cádmio')
+dados_x = [1.50296 + 4178.27*i for i in np.linspace(1.5e-6, 6.5e-6, 20)]
+plt.plot(np.linspace(1.5e-6, 6.5e-6, 20), dados_x, label='equação fit')
+plt.ylabel('Índice de refração N', fontsize=16)
+plt.xlabel(r'$\lambda^{-2}$' + r'($\mathrm{ nm^{2}}$)', fontsize=16)
+plt.title('Gráfico experimental', fontsize=16)
+plt.xticks(fontsize=16)
+plt.yticks(fontsize=16)
+plt.legend(loc = 'upper left',fontsize = 14,shadow=True)
+leg = plt.legend(loc = 'upper left',fontsize = 14,shadow=True)
+leg.get_frame().set_facecolor('ivory')
+leg.get_frame().set_linewidth(2)
+
+#Gráfico de lambda pelo desvio mínimo. Nosso grupo e o outro grupo.
+
+plt.plot(n_zn, lambda_normal_zn, linestyle='', marker='o',color='#00ff00', label='zinco')
+plt.plot(n_hg, lambda_normal_hg, linestyle='', marker='o',color='#b58900', label='mercúrio')
+plt.plot(n_cd, lambda_normal_cd, linestyle='', marker='o',color='#dc322f', label='cádmio')
+plt.plot(n_grupoii, lambda_normal_grupoii, linestyle='', marker='o',color='grey', label='grupo II')
+plt.ylabel('$\lambda$' + r'($nm$)', fontsize=16)
+plt.xlabel(r'$\delta_{min}$' + r'(rad)', fontsize=16)
+plt.title('Gráfico experimental', fontsize=16)
+plt.xticks(fontsize=16)
+plt.yticks(fontsize=16)
+plt.legend(loc = 'upper center',fontsize = 14,shadow=True)
+leg = plt.legend(loc = 'upper center',fontsize = 14,shadow=True)
+leg.get_frame().set_facecolor('ivory')
+leg.get_frame().set_linewidth(2)
+
+#Gráfico do índice de refração por lambda. Nosso grupo e o outro grupo.
+
+plt.rcParams['figure.dpi']=150
+plt.plot(lambda_normal_zn, n_zn, linestyle='', marker='o',color='#00ff00', label='zinco')
+plt.plot(lambda_normal_hg, n_hg, linestyle='', marker='o',color='#b58900', label='mercúrio')
+plt.plot(lambda_normal_cd,n_cd, linestyle='', marker='o',color='#dc322f', label='cádmio')
+fit_n_por_lambda = [1.74927*i**(-0.0225765) for i in np.linspace(400,700,100)]
+plt.plot(np.linspace(400,700,100), fit_n_por_lambda, linestyle='-', marker='',color='orange')
+plt.plot(lambda_normal_grupoii, n_grupoii, linestyle='', marker='o',color='black')
+
+fit_n_por_lambda_grupoii = [2.07546*i**(-0.0386542) for i in np.linspace(400,700,100)]
+plt.plot(np.linspace(400,700,100), fit_n_por_lambda_grupoii, linestyle='-', marker='',color='gray')
+
+plt.ylabel('Índice de refração N', fontsize=16)
+plt.xlabel(r'$\lambda$' + r'(nm)', fontsize=16)
+plt.title('Gráfico experimental', fontsize=16)
+plt.savefig('aaaa.pdf')
